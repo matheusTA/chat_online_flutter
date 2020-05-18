@@ -1,13 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_online_flutter/app/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
-
-  Firestore.instance
-      .collection("col")
-      .document("doc")
-      .setData({"texto": "Matheus"});
 }
 
 class MyApp extends StatelessWidget {
@@ -16,10 +11,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Container(),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          iconTheme: IconThemeData(
+            color: Colors.blue,
+          )),
+      home: ChatScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
