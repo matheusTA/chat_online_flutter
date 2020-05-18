@@ -43,7 +43,7 @@ class Message extends StatelessWidget {
           )),
           mine
               ? Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0),
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(data["senderPhotoUrl"]),
                   ),
