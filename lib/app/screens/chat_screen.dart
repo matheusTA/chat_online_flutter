@@ -181,6 +181,7 @@ class _ChatScreenState extends State<ChatScreen> {
             _isLoading ? LinearProgressIndicator() : Container(),
             TextInput(
               sendMessage: _sendMessage,
+              isAuth: _currentUser != null,
             ),
           ],
         ));

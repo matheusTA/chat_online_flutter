@@ -5,8 +5,8 @@ import 'package:image_picker/image_picker.dart';
 
 class TextInput extends StatefulWidget {
   final Function({String text, File imgFile}) sendMessage;
-
-  TextInput({@required this.sendMessage});
+  final bool isAuth;
+  TextInput({@required this.sendMessage, @required this.isAuth});
 
   @override
   _TextInputState createState() => _TextInputState();
@@ -31,7 +31,7 @@ class _TextInputState extends State<TextInput> {
         children: <Widget>[
           IconButton(
               icon: Icon(Icons.photo_camera),
-              onPressed: _isComposing
+              onPressed: widget.isAuth
                   ? () async {
                       final File imgFile = await ImagePicker.pickImage(
                           source: ImageSource.camera);
