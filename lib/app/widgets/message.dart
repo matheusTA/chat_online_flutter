@@ -36,7 +36,7 @@ class Message extends StatelessWidget {
                       style: TextStyle(fontSize: 16.0),
                     ),
               Text(
-                data["senderName"],
+                "${data["senderName"]} | ${data["senderTime"]}",
                 style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w500),
               )
             ],

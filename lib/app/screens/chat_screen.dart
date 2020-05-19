@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:chat_online_flutter/app/components/message_component.dart';
-import 'package:chat_online_flutter/app/components/text_component.dart';
+import 'package:chat_online_flutter/app/widgets/message.dart';
+import 'package:chat_online_flutter/app/widgets/textInput.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -98,6 +98,30 @@ class _ChatScreenState extends State<ChatScreen> {
     Firestore.instance.collection("messages").add(data);
   }
 
+  Widget _showMessages(
+      BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+      case ConnectionState.waiting:
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+        break;
+      default:
+        List<DocumentSnapshot> documents =
+            snapshot.data.documents.reversed.toList();
+
+        return ListView.builder(
+            itemCount: documents.length,
+            reverse: true,
+            itemBuilder: (context, index) {
+              return Message(
+                  data: documents[index].data,
+                  mine: documents[index].data["uid"] == _currentUser?.uid);
+            });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,37 +147,39 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         body: Column(
           children: <Widget>[
-            Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: Firestore.instance
-                        .collection("messages")
-                        .orderBy("time")
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                          break;
-                        default:
-                          List<DocumentSnapshot> documents =
-                              snapshot.data.documents.reversed.toList();
-
-                          return ListView.builder(
-                              itemCount: documents.length,
-                              reverse: true,
-                              itemBuilder: (context, index) {
-                                return Message(
-                                    data: documents[index].data,
-                                    mine: documents[index].data["uid"] ==
-                                        _currentUser?.uid);
-                              });
-                      }
-                    })),
+            _currentUser != null
+                ? Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: Firestore.instance
+                            .collection("messages")
+                            .orderBy("time")
+                            .snapshots(),
+                        builder: _showMessages))
+                : Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 50.0),
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.lock,
+                            size: 100,
+                            color: Color(0xFF757575),
+                          ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(5, 15.0, 5, 25.0),
+                            child: Text(
+                              "Para ler as mensagens é preciso fazer login com o google, digite sua mensagem e clique em enviar que será pedido para você se autenticar",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color(0xFF757575), fontSize: 25.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
             _isLoading ? LinearProgressIndicator() : Container(),
-            TextComponent(
+            TextInput(
               sendMessage: _sendMessage,
             ),
           ],

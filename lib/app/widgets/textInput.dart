@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class TextComponent extends StatefulWidget {
+class TextInput extends StatefulWidget {
   final Function({String text, File imgFile}) sendMessage;
 
-  TextComponent({@required this.sendMessage});
+  TextInput({@required this.sendMessage});
 
   @override
-  _TextComponentState createState() => _TextComponentState();
+  _TextInputState createState() => _TextInputState();
 }
 
-class _TextComponentState extends State<TextComponent> {
+class _TextInputState extends State<TextInput> {
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
 
@@ -31,14 +31,16 @@ class _TextComponentState extends State<TextComponent> {
         children: <Widget>[
           IconButton(
               icon: Icon(Icons.photo_camera),
-              onPressed: () async {
-                final File imgFile =
-                    await ImagePicker.pickImage(source: ImageSource.camera);
+              onPressed: _isComposing
+                  ? () async {
+                      final File imgFile = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
 
-                if (imgFile == null) return;
+                      if (imgFile == null) return;
 
-                widget.sendMessage(imgFile: imgFile);
-              }),
+                      widget.sendMessage(imgFile: imgFile);
+                    }
+                  : null),
           Expanded(
               child: TextField(
             controller: _textController,
